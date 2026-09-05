@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { signSession } from "@/lib/auth"
-import { setUserRole, upsertUser } from "@/lib/data"
+import { upsertUser } from "@/lib/data"
+import { syncDiscordRole } from "@/lib/discord"
 export const runtime = "nodejs"
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code")
@@ -16,15 +17,7 @@ export async function GET(request: NextRequest) {
   const botToken = process.env.DISCORD_BOT_TOKEN, guildId = process.env.DISCORD_GUILD_ID
   if (botToken && guildId) await fetch(`https://discord.com/api/guilds/${guildId}/members/${user.id}`, {method:"PUT",headers:{Authorization:`Bot ${botToken}`,"Content-Type":"application/json"},body:JSON.stringify({access_token:auth.access_token})})
   await upsertUser({ id: user.id, username: user.username, avatarUrl: user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : null })
-  // Discord roles are the source of truth for marketplace publishing access.
-  if (botToken && guildId) {
-    const membership = await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${user.id}`, { headers: { Authorization: `Bot ${botToken}` } })
-    if (membership.ok) {
-      const member = await membership.json() as { roles?: string[] }
-      const role = member.roles?.includes(process.env.DISCORD_OWNER_ROLE_ID ?? "") ? "owner" : member.roles?.includes(process.env.DISCORD_STAFF_ROLE_ID ?? "") ? "editor" : "customer"
-      await setUserRole(user.id, role)
-    }
-  }
+  await syncDiscordRole(user.id)
   const response = NextResponse.redirect(new URL("/profile?connected=1", request.url))
   response.cookies.set("ryvn_discord_user", signSession({id:user.id,username:user.username,avatarUrl:user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : null}), {httpOnly:true,secure:true,sameSite:"lax",path:"/",maxAge:60*60*24*7})
   response.cookies.delete("ryvn_oauth_state")
