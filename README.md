@@ -39,6 +39,6 @@ Copy `.env.example` to `.env.local` before enabling Discord OAuth. The callback 
 
 ## Live data
 
-Create a Supabase project, run [supabase/schema.sql](supabase/schema.sql) in its SQL editor, and add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel. The API then reads only published products from Postgres and accepts staff product creation through the protected product endpoint.
+RYVN uses Neon Postgres. The schema in [supabase/schema.sql](supabase/schema.sql) has already been applied to the linked Neon production branch. Add `DATABASE_URL` to Vercel to activate the catalog API. The API reads only published products and accepts staff product creation through the protected product endpoint.
 
-Before production, connect a database for profiles, staff roles, reviews, products, and commissions; configure payment providers; connect the ticket bot; and attach GLB/GLTF vehicle models to the preview surface.
+For a full production launch, add the Discord OAuth client ID, client secret, bot token, guild ID, redirect URI, ticket category ID, `SESSION_SECRET`, and `RYVN_ADMIN_API_KEY` in Vercel. Configure payment providers last, then attach GLB/GLTF vehicle models to the preview surface.
