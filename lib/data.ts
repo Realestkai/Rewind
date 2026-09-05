@@ -17,7 +17,18 @@ export async function dashboardSummary() { if (!dataConfigured) return { product
 export async function listAdminProducts(): Promise<Product[]> { if (!dataConfigured) return []; return db()`select id, slug, brand, name, price_robux, price_usd, vehicle_type, preview_label, description, features, hero_image_url, youtube_url, collage_urls, model_url, published from products order by created_at desc` as Promise<Product[]> }
 export async function listAdminCommissions() { if (!dataConfigured) return []; return db()`select commissions.id, commissions.status, commissions.details, commissions.created_at, commissions.discord_channel_id, users.username, products.name as product_name from commissions join users on users.id = commissions.user_id left join products on products.id = commissions.product_id order by commissions.created_at desc limit 50` as Promise<{id:string;status:string;details:string;created_at:string;discord_channel_id:string|null;username:string;product_name:string|null}[]> }
 export async function listAdminReviews() { if (!dataConfigured) return []; return db()`select reviews.id, reviews.rating, reviews.body, reviews.approved, reviews.created_at, users.username, products.name as product_name from reviews join users on users.id=reviews.user_id join products on products.id=reviews.product_id order by reviews.created_at desc limit 50` as Promise<{id:string;rating:number;body:string;approved:boolean;created_at:string;username:string;product_name:string}[]> }
-export async function updateProduct(id: string, input: Partial<Product>) { const rows = await db()`update products set name = coalesce(${input.name ?? null}, name), brand = coalesce(${input.brand ?? null}, brand), vehicle_type = coalesce(${input.vehicle_type ?? null}, vehicle_type), description = coalesce(${input.description ?? null}, description), hero_image_url = coalesce(${input.hero_image_url ?? null}, hero_image_url), price_robux = coalesce(${input.price_robux ?? null}, price_robux), price_usd = coalesce(${input.price_usd ?? null}, price_usd), published = coalesce(${input.published ?? null}, published) where id = ${id} returning *` as Product[]; return rows[0] ?? null }
+export async function updateProduct(id: string, input: Partial<Product>) {
+  const rows = await db()`update products set
+    slug = coalesce(${input.slug ?? null}, slug), name = coalesce(${input.name ?? null}, name), brand = coalesce(${input.brand ?? null}, brand),
+    vehicle_type = coalesce(${input.vehicle_type ?? null}, vehicle_type), description = coalesce(${input.description ?? null}, description),
+    preview_label = coalesce(${input.preview_label ?? null}, preview_label), hero_image_url = coalesce(${input.hero_image_url ?? null}, hero_image_url),
+    youtube_url = coalesce(${input.youtube_url ?? null}, youtube_url), model_url = coalesce(${input.model_url ?? null}, model_url),
+    features = coalesce(${input.features ? JSON.stringify(input.features) : null}::jsonb, features),
+    collage_urls = coalesce(${input.collage_urls ? JSON.stringify(input.collage_urls) : null}::jsonb, collage_urls),
+    price_robux = coalesce(${input.price_robux ?? null}, price_robux), price_usd = coalesce(${input.price_usd ?? null}, price_usd),
+    published = coalesce(${input.published ?? null}, published), updated_at = now() where id = ${id} returning *` as Product[]
+  return rows[0] ?? null
+}
 export async function deleteProduct(id: string) { await db()`delete from products where id = ${id}` }
 export async function commissionProductId(slug?: string | null) {
   if (!slug || !dataConfigured) return null
