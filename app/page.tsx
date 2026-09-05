@@ -1,4 +1,4 @@
-import HeadphoneScroll from "@/components/headphone-scroll"
+import { CarScroll } from "@/components/headphone-scroll"
 
 export default function Home() {
   return (
@@ -30,14 +30,14 @@ export default function Home() {
       </nav>
 
       {/* Scrollytelling Section */}
-      <HeadphoneScroll />
+      <CarScroll />
 
       <section className="relative z-10 bg-[#050505]">
         <div className="mx-auto max-w-7xl px-6 py-24 md:px-12 md:py-32">
           <div className="mb-16 md:mb-20">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">Technology</p>
             <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">
-              Engineered for the most demanding ears.
+              Engineered for the most demanding roads.
             </h2>
           </div>
 
@@ -217,8 +217,8 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-32">
           <div className="grid gap-12 md:grid-cols-2 md:gap-16">
             <div>
-              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">The Future of Audio</p>
-              <h3 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Sound that transcends.</h3>
+              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">The Future of Driving</p>
+              <h3 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Performance that stays with you.</h3>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-white/40">
                 Momo X represents the pinnacle of audio engineering. Combining cutting-edge materials with decades of
                 acoustic research.
@@ -228,12 +228,12 @@ export default function Home() {
               </button>
             </div>
             <div className="flex flex-col justify-center">
-              <p className="text-sm text-white/40">Ships worldwide</p>
+              <p className="text-sm text-white/40">First deliveries</p>
               <p className="mt-1 text-2xl font-semibold text-white">Spring 2026</p>
             </div>
           </div>
           <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-white/30">
-            <span>© 2026 Momo Audio</span>
+            <span>© 2026 Momo Automotive</span>
             <div className="flex gap-6">
               <a href="#" className="transition-colors hover:text-white/60">
                 Privacy

@@ -1,291 +1,106 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
+import { useRef } from "react"
+import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 
-const FRAME_COUNT = 192
-const IMAGE_PATH = "/frames/"
+const CAR_IMAGE =
+  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gemini_Generated_Image_bzfyv2bzfyv2bzfy-wgWw8tMapZp74kPo6WRQf4eKWl0Jrw.jpg"
 
-function getFramePath(index: number): string {
-  const paddedIndex = index.toString().padStart(5, "0")
-  return `${IMAGE_PATH}${paddedIndex}.jpg`
-}
-
-export default function HeadphoneScroll() {
+export default function CarScroll() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [images, setImages] = useState<HTMLImageElement[]>([])
-  const [loadingProgress, setLoadingProgress] = useState(0)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [successCount, setSuccessCount] = useState(0)
-
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   })
+  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24, restDelta: 0.001 })
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  })
-
-  // Preload all images
-  useEffect(() => {
-    const loadedImages: HTMLImageElement[] = []
-    let loadedCount = 0
-    let successfulLoads = 0
-
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image()
-      img.crossOrigin = "anonymous"
-      img.src = getFramePath(i)
-
-      img.onload = () => {
-        loadedCount++
-        successfulLoads++
-        setLoadingProgress(Math.round((loadedCount / FRAME_COUNT) * 100))
-        setSuccessCount(successfulLoads)
-
-        if (loadedCount === FRAME_COUNT && successfulLoads > 0) {
-          setImages(loadedImages)
-          setIsLoaded(true)
-        }
-      }
-
-      img.onerror = () => {
-        loadedCount++
-        setLoadingProgress(Math.round((loadedCount / FRAME_COUNT) * 100))
-
-        if (loadedCount === FRAME_COUNT && successfulLoads > 0) {
-          setImages(loadedImages)
-          setIsLoaded(true)
-        }
-      }
-
-      loadedImages[i] = img
-    }
-  }, [])
-
-  // Draw frame to canvas
-  useEffect(() => {
-    if (!isLoaded || images.length === 0) return
-
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    const render = () => {
-      const frameIndex = Math.min(FRAME_COUNT - 1, Math.max(0, Math.floor(smoothProgress.get() * (FRAME_COUNT - 1))))
-
-      const img = images[frameIndex]
-      if (!img || !img.complete || img.naturalWidth === 0) return
-
-      // Set canvas size to match image aspect ratio
-      const dpr = window.devicePixelRatio || 1
-      const containerWidth = canvas.clientWidth
-      const containerHeight = canvas.clientHeight
-
-      canvas.width = containerWidth * dpr
-      canvas.height = containerHeight * dpr
-
-      ctx.scale(dpr, dpr)
-      ctx.clearRect(0, 0, containerWidth, containerHeight)
-
-      const imgAspect = img.width / img.height
-      const canvasAspect = containerWidth / containerHeight
-
-      let drawWidth, drawHeight, drawX, drawY
-
-      if (imgAspect > canvasAspect) {
-        drawHeight = containerHeight
-        drawWidth = containerHeight * imgAspect
-        drawX = (containerWidth - drawWidth) / 2
-        drawY = 0
-      } else {
-        drawWidth = containerWidth
-        drawHeight = containerWidth / imgAspect
-        drawX = 0
-        drawY = (containerHeight - drawHeight) / 2
-      }
-
-      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
-    }
-
-    render()
-    const unsubscribe = smoothProgress.on("change", render)
-
-    window.addEventListener("resize", render)
-    return () => {
-      unsubscribe()
-      window.removeEventListener("resize", render)
-    }
-  }, [isLoaded, images, smoothProgress])
-
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0])
-  const precisionOpacity = useTransform(scrollYProgress, [0.18, 0.28, 0.42, 0.52], [0, 1, 1, 0])
-  const titaniumOpacity = useTransform(scrollYProgress, [0.52, 0.62, 0.76, 0.86], [0, 1, 1, 0])
-  const finalOpacity = useTransform(scrollYProgress, [0.88, 0.95], [0, 1])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0])
+  const precisionOpacity = useTransform(scrollYProgress, [0.16, 0.25, 0.38, 0.47], [0, 1, 1, 0])
+  const interiorOpacity = useTransform(scrollYProgress, [0.43, 0.56, 0.68, 0.77], [0, 1, 1, 0])
+  const finalOpacity = useTransform(scrollYProgress, [0.78, 0.9], [0, 1])
+  const carRotate = useTransform(progress, [0, 0.45, 0.75, 1], [-2, 9, -4, 0])
+  const carScale = useTransform(progress, [0, 0.35, 0.68, 1], [1, 1.08, 1.16, 1.02])
+  const carX = useTransform(progress, [0, 0.45, 0.75, 1], [0, -28, 24, 0])
+  const carY = useTransform(progress, [0, 0.55, 1], [20, -12, 0])
 
   return (
-    <>
-      {/* Loading Screen */}
-      {!isLoaded && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#050505]">
-          <div className="mb-4 text-xl font-medium tracking-tight text-white/80">MOMO X</div>
-          <div className="mb-6">
-            <motion.div
-              className="h-[2px] w-56 overflow-hidden rounded-full bg-white/10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <motion.div
-                className="h-full bg-white/80"
-                initial={{ width: 0 }}
-                animate={{ width: `${loadingProgress}%` }}
-                transition={{ duration: 0.2 }}
-              />
-            </motion.div>
-          </div>
-          <motion.p
-            className="font-mono text-xs tracking-widest text-white/30"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Loading {loadingProgress}%
-          </motion.p>
-          {loadingProgress === 100 && successCount === 0 && (
-            <motion.p className="mt-4 text-xs text-red-400" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              No images loaded. Check image paths.
-            </motion.p>
-          )}
-        </div>
-      )}
+    <div ref={containerRef} className="relative h-[500vh]">
+      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-[#080711]">
+        <motion.div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${CAR_IMAGE})`,
+            scale: useTransform(progress, [0, 1], [1.06, 1.14]),
+          }}
+        />
+        <div className="absolute inset-0 bg-[#070714]/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#080711] via-transparent to-[#080711]/30" />
 
-      {/* Scroll Container */}
-      <div ref={containerRef} className="relative h-[500vh]">
-        {/* Sticky Canvas */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
-          <canvas ref={canvasRef} className="h-full w-full" />
+        <motion.img
+          src={CAR_IMAGE}
+          alt="Purple performance sedan at a gas station at night"
+          className="relative z-10 h-auto w-[115%] max-w-none object-cover mix-blend-screen md:w-[88%] lg:w-[78%]"
+          style={{ rotate: carRotate, scale: carScale, x: carX, y: carY }}
+        />
 
-          {/* Text Overlays */}
-          <div className="pointer-events-none absolute inset-0">
-            <motion.div className="absolute inset-x-0 bottom-0" style={{ opacity: titleOpacity }}>
-              {/* Gradient backdrop for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent" />
-
-              <div className="relative px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
-                <motion.p
-                  className="mb-4 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/70"
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                  Introducing
-                </motion.p>
-                <motion.h1
-                  className="text-6xl font-bold tracking-tighter text-white md:text-8xl lg:text-9xl"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                  style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
-                >
-                  Momo X
-                </motion.h1>
-                <motion.p
-                  className="mt-4 max-w-md text-base font-normal tracking-wide text-white/70 md:text-lg"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.7, duration: 0.8 }}
-                >
-                  Pure Sound. Zero Compromise.
-                </motion.p>
-                <motion.div
-                  className="mt-8 flex items-center gap-3"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2, duration: 0.6 }}
-                >
-                  <div className="h-px w-8 bg-white/30" />
-                  <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-white/50">
-                    Scroll to explore
-                  </span>
-                  <motion.span
-                    className="text-white/50"
-                    animate={{ y: [0, 4, 0] }}
-                    transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5 }}
-                  >
-                    ↓
-                  </motion.span>
-                </motion.div>
+        <div className="pointer-events-none absolute inset-0 z-20">
+          <motion.div className="absolute inset-x-0 bottom-0" style={{ opacity: heroOpacity }}>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080711] via-[#080711]/80 to-transparent" />
+            <div className="relative px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
+              <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/70">Introducing</p>
+              <h1 className="text-6xl font-bold tracking-tighter text-white md:text-8xl lg:text-9xl">Momo R</h1>
+              <p className="mt-4 max-w-md text-base tracking-wide text-white/70 md:text-lg">Performance, in motion.</p>
+              <div className="mt-8 flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.3em] text-white/50">
+                <div className="h-px w-8 bg-white/30" /> Scroll to explore <span>↓</span>
               </div>
-            </motion.div>
+            </div>
+          </motion.div>
 
-            <motion.div className="absolute bottom-0 left-0 right-0" style={{ opacity: precisionOpacity }}>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent" />
-              <div className="relative px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
-                <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.4em] text-white/60">01</p>
-                <h2
-                  className="text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
-                  style={{ textShadow: "0 4px 30px rgba(0,0,0,0.4)" }}
-                >
-                  Designed for
-                  <br />
-                  Precision.
-                </h2>
-                <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60 md:text-base">
-                  Every component engineered with sub-millimeter accuracy for perfect acoustic response.
+          <motion.div className="absolute bottom-0 left-0 right-0" style={{ opacity: precisionOpacity }}>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080711] via-[#080711]/70 to-transparent" />
+            <div className="relative px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.4em] text-white/60">01</p>
+              <h2 className="text-4xl font-bold tracking-tight text-white md:text-6xl">Sculpted for speed.</h2>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60 md:text-base">
+                A low, athletic silhouette cut through midnight air. Scroll through every angle of the machine.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div className="absolute bottom-0 left-0 right-0" style={{ opacity: interiorOpacity }}>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080711] via-[#080711]/70 to-transparent" />
+            <div className="relative flex justify-end px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
+              <div className="max-w-md text-right">
+                <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.4em] text-white/60">02</p>
+                <h2 className="text-4xl font-bold tracking-tight text-white md:text-6xl">Open the experience.</h2>
+                <p className="ml-auto mt-4 max-w-sm text-sm leading-relaxed text-white/60 md:text-base">
+                  The next frame is the cabin: driver-focused controls, ambient light, and room to disappear into the road.
                 </p>
               </div>
-            </motion.div>
+            </div>
+          </motion.div>
 
-            <motion.div className="absolute bottom-0 left-0 right-0" style={{ opacity: titaniumOpacity }}>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent" />
-              <div className="relative flex justify-end px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
-                <div className="text-right">
-                  <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.4em] text-white/60">02</p>
-                  <h2
-                    className="text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
-                    style={{ textShadow: "0 4px 30px rgba(0,0,0,0.4)" }}
-                  >
-                    Titanium
-                    <br />
-                    Performance.
-                  </h2>
-                  <p className="ml-auto mt-4 max-w-sm text-sm leading-relaxed text-white/60 md:text-base">
-                    Aerospace-grade materials deliver uncompromising durability and featherlight comfort.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div className="absolute bottom-0 left-0 right-0" style={{ opacity: finalOpacity }}>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent" />
-              <div className="relative px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
-                <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.4em] text-white/60">03</p>
-                <h2
-                  className="text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
-                  style={{ textShadow: "0 4px 30px rgba(0,0,0,0.4)" }}
-                >
-                  Hear Beyond.
-                </h2>
-                <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60 md:text-base">
-                  40mm planar drivers. Active noise cancellation. 60-hour battery. Spatial audio ready.
-                </p>
-                <motion.button
-                  className="pointer-events-auto mt-8 rounded-full bg-white px-8 py-4 text-sm font-semibold tracking-wide text-black transition-all hover:bg-white/90"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Pre-order — $549
-                </motion.button>
-              </div>
-            </motion.div>
-          </div>
+          <motion.div className="absolute bottom-0 left-0 right-0" style={{ opacity: finalOpacity }}>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080711] via-[#080711]/80 to-transparent" />
+            <div className="relative px-6 pb-16 md:px-12 md:pb-20 lg:px-20">
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.4em] text-white/60">03</p>
+              <h2 className="text-4xl font-bold tracking-tight text-white md:text-6xl">Make every arrival count.</h2>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60 md:text-base">
+                Adaptive performance, intelligent all-wheel drive, and a cockpit built around the person behind the wheel.
+              </p>
+              <motion.button className="pointer-events-auto mt-8 rounded-full bg-white px-8 py-4 text-sm font-semibold tracking-wide text-black" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                Reserve Momo R
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
+
+export { CarScroll }
+export { CarScroll as HeadphoneScroll }
+
+// The supplied single hero image is used as the product plate; the spring-driven
+// camera motion creates the 360-style reveal while the copy cues the interior beat.
