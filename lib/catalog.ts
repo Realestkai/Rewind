@@ -1,11 +1,4 @@
-export type Product = { slug: string; brand: string; name: string; price: string; format: string; preview: string; description: string; features: string[] }
 export const brands = ["All vehicles", "BMW", "Porsche", "Mercedes-Benz", "Audi", "Lamborghini", "McLaren"]
-export const products: Product[] = [
-  { slug: "bmw-m5-f90", brand: "BMW", name: "M5 F90", price: "From 2,400 R$", format: "SEDAN", preview: "360° PREVIEW READY", description: "An executive performance sedan prepared as a detailed Roblox vehicle package.", features: ["Detailed exterior", "Opening-panel ready setup", "Separate lighting groups", "Interior package"] },
-  { slug: "porsche-911-turbo-s", brand: "Porsche", name: "911 Turbo S", price: "From 2,900 R$", format: "COUPÉ", preview: "VIDEO PREVIEW", description: "A focused grand tourer with a complete visual package for your experience.", features: ["High-detail model", "Preview media", "Lighting map", "Commission-ready"] },
-  { slug: "mercedes-amg-gt", brand: "Mercedes-Benz", name: "AMG GT", price: "From 2,700 R$", format: "COUPÉ", preview: "COLLAGE PREVIEW", description: "A low, sculpted platform designed for premium roleplay and driving games.", features: ["Detailed exterior", "Cabin detail", "Preview media", "Custom options available"] },
-  { slug: "audi-rs6-c8", brand: "Audi", name: "RS6 C8", price: "From 2,600 R$", format: "AVANT", preview: "360° PREVIEW READY", description: "A practical performance wagon with a clean, showroom-ready finish.", features: ["Detailed exterior", "Separate light groups", "Interior package", "Commission-ready"] },
-  { slug: "lamborghini-huracan", brand: "Lamborghini", name: "Huracán EVO", price: "From 3,100 R$", format: "SUPERCAR", preview: "VIDEO PREVIEW", description: "A sharp mid-engine supercar for collections that need presence.", features: ["High-detail model", "Preview media", "Interior package", "Custom options available"] },
-  { slug: "mclaren-750s", brand: "McLaren", name: "750S", price: "From 3,200 R$", format: "SUPERCAR", preview: "COLLAGE PREVIEW", description: "A lightweight modern supercar built for visual impact in motion.", features: ["Detailed exterior", "Lighting map", "Preview media", "Commission-ready"] },
-]
+export type LegacyProduct = { slug: string; brand: string; name: string; price: string; format: string; preview: string; description: string; features: string[] }
+export const products: LegacyProduct[] = []
 export function getProduct(slug: string) { return products.find((product) => product.slug === slug) }

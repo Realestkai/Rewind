@@ -37,4 +37,8 @@ RYVN is a Roblox vehicle marketplace with a marque-filtered catalog, vehicle det
 
 Copy `.env.example` to `.env.local` before enabling Discord OAuth. The callback adds a member to the RYVN Discord guild only when the bot token and guild ID are configured.
 
+## Live data
+
+Create a Supabase project, run [supabase/schema.sql](supabase/schema.sql) in its SQL editor, and add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel. The API then reads only published products from Postgres and accepts staff product creation through the protected product endpoint.
+
 Before production, connect a database for profiles, staff roles, reviews, products, and commissions; configure payment providers; connect the ticket bot; and attach GLB/GLTF vehicle models to the preview surface.
