@@ -1,4 +1,4 @@
-import HeadphoneScroll from "@/components/headphone-scroll"
+import { CarScroll } from "@/components/headphone-scroll"
 
 export default function Home() {
   return (
@@ -30,19 +30,19 @@ export default function Home() {
       </nav>
 
       {/* Scrollytelling Section */}
-      <HeadphoneScroll />
+      <CarScroll />
 
       <section className="relative z-10 bg-[#050505]">
         <div className="mx-auto max-w-7xl px-6 py-24 md:px-12 md:py-32">
           <div className="mb-16 md:mb-20">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">Technology</p>
             <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">
-              Engineered for the most demanding ears.
+              Engineered for the most demanding roads.
             </h2>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Feature 1 - Active Noise Cancellation */}
+            {/* Feature 1 - Flat-Six Performance */}
             <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
                 <svg
@@ -59,10 +59,9 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Active Noise Cancellation</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white">Flat-Six Performance</h3>
               <p className="text-sm leading-relaxed text-white/40">
-                -45dB noise reduction with adaptive algorithms that continuously analyze and neutralize ambient sound in
-                real-time.
+                A responsive flat-six delivers immediate throttle response and a rising soundtrack from every apex.
               </p>
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-white">-45</span>
@@ -87,10 +86,9 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">40mm Planar Drivers</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white">Adaptive Chassis</h3>
               <p className="text-sm leading-relaxed text-white/40">
-                Ultra-thin diaphragm delivers distortion-free audio across the entire frequency range, from deep bass to
-                crystal highs.
+                Adaptive suspension balances everyday composure with precise control when the road starts to bend.
               </p>
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-white">40</span>
@@ -115,10 +113,9 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">All-Day Battery</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white">Driver-Focused Cockpit</h3>
               <p className="text-sm leading-relaxed text-white/40">
-                60 hours of continuous playback. Quick charge delivers 5 hours of listening from just 10 minutes of
-                charging.
+                Every control falls naturally to hand, from the steering wheel to the intuitive driver display.
               </p>
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-white">60</span>
@@ -126,7 +123,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Feature 4 - Spatial Audio */}
+            {/* Feature 4 - 360° Turntable Reveal */}
             <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
                 <svg
@@ -143,10 +140,9 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Spatial Audio</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white">360° Turntable Reveal</h3>
               <p className="text-sm leading-relaxed text-white/40">
-                Immersive 360° soundstage with dynamic head tracking. Feel every note positioned precisely in
-                three-dimensional space.
+                Explore the 911 from every side with a cinematic frame-by-frame turntable reveal.
               </p>
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-white">360</span>
@@ -171,14 +167,13 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Bluetooth 5.3</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white">Sport Chrono</h3>
               <p className="text-sm leading-relaxed text-white/40">
-                Lossless audio codec support with ultra-low latency. Seamlessly connect to multiple devices
-                simultaneously.
+                A stopwatch-inspired performance system keeps every launch and lap within reach.
               </p>
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-white">5.3</span>
-                <span className="text-sm text-white/40">BT version</span>
+                <span className="text-sm text-white/40">system</span>
               </div>
             </div>
 
@@ -199,10 +194,9 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Featherlight Design</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white">Timeless Silhouette</h3>
               <p className="text-sm leading-relaxed text-white/40">
-                Aerospace-grade titanium frame weighing just 285g. Designed for all-day comfort without compromising
-                durability.
+                A balanced silhouette, signature lamps, and a roofline shaped by generations of refinement.
               </p>
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-white">285</span>
@@ -217,23 +211,22 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-32">
           <div className="grid gap-12 md:grid-cols-2 md:gap-16">
             <div>
-              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">The Future of Audio</p>
-              <h3 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Sound that transcends.</h3>
+              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">The Future of Driving</p>
+              <h3 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Performance that stays with you.</h3>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-white/40">
-                Momo X represents the pinnacle of audio engineering. Combining cutting-edge materials with decades of
-                acoustic research.
+                The 911 Carrera represents decades of sports-car evolution. Every surface, control, and response is designed to keep the driver at the center.
               </p>
               <button className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-medium text-black transition-opacity hover:opacity-90">
-                Order Now — $549
+                Configure your 911
               </button>
             </div>
             <div className="flex flex-col justify-center">
-              <p className="text-sm text-white/40">Ships worldwide</p>
+              <p className="text-sm text-white/40">First deliveries</p>
               <p className="mt-1 text-2xl font-semibold text-white">Spring 2026</p>
             </div>
           </div>
           <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-white/30">
-            <span>© 2026 Momo Audio</span>
+            <span>© 2026 Momo Automotive</span>
             <div className="flex gap-6">
               <a href="#" className="transition-colors hover:text-white/60">
                 Privacy
