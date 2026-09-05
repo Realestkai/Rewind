@@ -16,6 +16,7 @@ async function createTicket(userId: string, username: string, details: string) {
     body: JSON.stringify({ name: `ticket-${safeName}`, type: 0, parent_id: category, permission_overwrites: [
       { id: guild, type: 0, deny: "1024" },
       { id: userId, type: 1, allow: "3072" },
+      ...(process.env.DISCORD_STAFF_ROLE_ID ? [{ id: process.env.DISCORD_STAFF_ROLE_ID, type: 0, allow: "3072" }] : []),
     ] }),
   })
   if (!ticket.ok) return null
