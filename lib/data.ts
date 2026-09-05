@@ -6,3 +6,16 @@ function db() { if (!connectionString) throw new Error("DATABASE_URL is not conf
 export async function listPublishedProducts(): Promise<Product[]> { if (!dataConfigured) return []; return db()`select id, slug, brand, name, price_robux, price_usd, vehicle_type, preview_label, description, features, hero_image_url, youtube_url, collage_urls, model_url, published from products where published = true order by created_at desc` as Promise<Product[]> }
 export async function productBySlug(slug: string): Promise<Product | null> { if (!dataConfigured) return null; const rows = await db()`select id, slug, brand, name, price_robux, price_usd, vehicle_type, preview_label, description, features, hero_image_url, youtube_url, collage_urls, model_url, published from products where slug = ${slug} and published = true limit 1` as Product[]; return rows[0] ?? null }
 export async function createProduct(product: Omit<Product, "id" | "published">) { const rows = await db()`insert into products (slug, brand, name, price_robux, price_usd, vehicle_type, preview_label, description, features, hero_image_url, youtube_url, collage_urls, model_url, published) values (${product.slug}, ${product.brand}, ${product.name}, ${product.price_robux}, ${product.price_usd}, ${product.vehicle_type}, ${product.preview_label}, ${product.description}, ${JSON.stringify(product.features)}::jsonb, ${product.hero_image_url}, ${product.youtube_url}, ${JSON.stringify(product.collage_urls)}::jsonb, ${product.model_url}, false) returning *` as Product[]; return rows }
+export async function upsertUser(user: { id: string; username: string; avatarUrl?: string | null }) {
+  if (!dataConfigured) return
+  await db()`insert into users (id, username, avatar_url) values (${user.id}, ${user.username}, ${user.avatarUrl ?? null}) on conflict (id) do update set username = excluded.username, avatar_url = excluded.avatar_url`
+}
+export async function commissionProductId(slug?: string | null) {
+  if (!slug || !dataConfigured) return null
+  const rows = await db()`select id from products where slug = ${slug} limit 1` as { id: string }[]
+  return rows[0]?.id ?? null
+}
+export async function createCommission(input: { userId: string; productId: string | null; requestTypes: string[]; details: string; attachmentUrl?: string | null; channelId?: string | null }) {
+  const rows = await db()`insert into commissions (user_id, product_id, request_type, details, attachment_url, discord_channel_id) values (${input.userId}, ${input.productId}, ${input.requestTypes}, ${input.details}, ${input.attachmentUrl ?? null}, ${input.channelId ?? null}) returning id, status, created_at` as { id: string; status: string; created_at: string }[]
+  return rows[0]
+}
