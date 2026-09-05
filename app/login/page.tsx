@@ -1,0 +1,3 @@
+import Link from "next/link"
+import { MessageCircle } from "lucide-react"
+export default function LoginPage(){return <main className="auth-page"><Link href="/" className="wordmark">RYVN<span>®</span></Link><section><p className="eyebrow">MEMBER ACCESS</p><h1>Your RYVN account.</h1><p>Sign in with Discord to keep purchases, commissions, tickets and reviews together.</p><a href="/api/auth/discord" className="discord-button"><MessageCircle size={19}/> Continue with Discord</a><small>When the RYVN Discord server launches, verified sign-ins can be added to it automatically with your permission.</small><Link href="/">Return to RYVN</Link></section></main>}

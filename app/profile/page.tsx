@@ -1,0 +1,2 @@
+import Link from "next/link"
+export default function ProfilePage(){return <main className="account-page"><header className="site-header"><Link href="/" className="wordmark">RYVN<span>®</span></Link><Link className="quiet-link" href="/settings">Settings</Link></header><section><span className="account-avatar">R</span><p className="eyebrow">YOUR PROFILE</p><h1>Connect Discord to begin.</h1><p>Purchases, reviews, commission updates and tickets will appear here after your account is linked.</p><Link className="button" href="/login">Sign in with Discord</Link></section></main>}

@@ -1,0 +1,15 @@
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import { ArrowLeft, ArrowRight, Check, MessageSquare, Play } from "lucide-react"
+import { getProduct, products } from "@/lib/catalog"
+
+export function generateStaticParams() { return products.map(({ slug }) => ({ slug })) }
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const product = getProduct((await params).slug); if (!product) notFound()
+  return <main className="detail-page"><header className="site-header"><Link href="/" className="wordmark">RYVN<span>®</span></Link><Link className="quiet-link" href="/#catalog">Back to catalog</Link></header>
+    <section className="detail-hero"><Link className="back" href="/#catalog"><ArrowLeft size={16}/> Catalog</Link><p className="eyebrow">{product.brand} / {product.format}</p><h1>{product.name}</h1><p>{product.description}</p><div className="detail-actions"><a className="button" href="#checkout">Choose payment <ArrowRight size={16}/></a><Link className="button button-ghost" href={"/commissions?vehicle=" + product.slug}>Commission this vehicle</Link></div></section>
+    <section className="media-zone"><div className="turntable"><span>360°</span><div className="car-silhouette"/><p>Interactive vehicle preview</p><small>Connect a GLB/GLTF model to enable orbit, zoom, lighting and paint previews.</small></div><div className="media-stack"><article><Play size={20}/><p className="eyebrow">WALKAROUND</p><h2>YouTube preview</h2><span>Add your video URL in the dashboard when this release is ready.</span></article><article><p className="eyebrow">REFERENCE SET</p><h2>Image collage</h2><span>Exterior, interior and detail images appear here for buyers who want a closer look.</span></article></div></section>
+    <section className="detail-grid"><div><p className="eyebrow">INCLUDED</p><h2>Prepared for your game.</h2>{product.features.map(feature => <p className="feature" key={feature}><Check size={16}/>{feature}</p>)}</div><div id="checkout" className="checkout-card"><p className="eyebrow">PURCHASE OPTIONS</p><h3>{product.price}</h3><p>Choose Robux or USD at checkout. Payment providers are selected per listing by RYVN.</p><button className="button" disabled>Checkout setup in progress</button><small>Payment is intentionally unavailable until a seller account is connected.</small></div></section>
+    <section className="reviews"><div><p className="eyebrow">COMMUNITY NOTES</p><h2>Reviews</h2><p>Reviews show a profile image and a redacted username to protect buyer privacy.</p></div><div className="review-list"><article><div className="avatar">J</div><div><strong>jay•••</strong><span>★★★★★</span><p>Clean delivery and the preview made it easy to decide.</p></div></article><article><div className="avatar pale">R</div><div><strong>r•••••</strong><span>★★★★★</span><p>Great detail work. The commission flow was clear.</p></div></article><button className="review-button"><MessageSquare size={16}/> Sign in to leave a review</button></div></section>
+  </main>
+}

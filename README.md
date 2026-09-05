@@ -31,3 +31,10 @@ To learn more, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 - [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+# RYVN
+
+RYVN is a Roblox vehicle marketplace with a marque-filtered catalog, vehicle detail pages, commission requests, Discord account entry, staff dashboard screens, and accessibility controls.
+
+Copy `.env.example` to `.env.local` before enabling Discord OAuth. The callback adds a member to the RYVN Discord guild only when the bot token and guild ID are configured.
+
+Before production, connect a database for profiles, staff roles, reviews, products, and commissions; configure payment providers; connect the ticket bot; and attach GLB/GLTF vehicle models to the preview surface.

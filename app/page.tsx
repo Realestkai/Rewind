@@ -1,246 +1,38 @@
-import { CarScroll } from "@/components/headphone-scroll"
+"use client"
+
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { ArrowRight, Check, Eye, Menu, Play, ShieldCheck, SlidersHorizontal, X } from "lucide-react"
+import { brands, products } from "@/lib/catalog"
 
 export default function Home() {
-  return (
-    <main className="relative bg-[#050505]">
-      {/* Navigation */}
-      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-4 md:px-10">
-        {/* Logo - Left */}
-        <a href="#" className="text-sm font-semibold tracking-tight text-white transition-opacity hover:opacity-70">
-          {""}
-        </a>
+  const [brand, setBrand] = useState("All vehicles")
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [compact, setCompact] = useState(false)
+  const [highContrast, setHighContrast] = useState(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const shown = brand === "All vehicles" ? products : products.filter((product) => product.brand === brand)
+  useEffect(() => {
+    document.documentElement.dataset.contrast = highContrast ? "high" : "normal"
+    document.documentElement.dataset.motion = reduceMotion ? "reduce" : "normal"
+    document.documentElement.style.fontSize = compact ? "112.5%" : "100%"
+  }, [compact, highContrast, reduceMotion])
 
-        {/* Nav Links - Center (hidden on mobile) */}
-        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
-          <a href="#" className="text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-white">
-            Products
-          </a>
-          <a href="#" className="text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-white">
-            Technology
-          </a>
-          <a href="#" className="text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-white">
-            About
-          </a>
-        </div>
-
-        {/* CTA - Right */}
-        <button className="rounded-full border border-white/20 bg-transparent px-5 py-2 text-xs font-medium text-white transition-all hover:bg-white hover:text-black">
-          Pre-order
-        </button>
+  return <main>
+    <a className="skip-link" href="#catalog">Skip to catalog</a>
+    <header className="site-header">
+      <Link href="/" className="wordmark" aria-label="RYVN home">RYVN<span>®</span></Link>
+      <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
+        <a href="#catalog" onClick={() => setMenuOpen(false)}>Catalog</a><Link href="/commissions">Commissions</Link><Link href="/accessibility">Accessibility</Link><Link href="/dashboard">Dashboard</Link>
       </nav>
-
-      {/* Scrollytelling Section */}
-      <CarScroll />
-
-      <section className="relative z-10 bg-[#050505]">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-12 md:py-32">
-          <div className="mb-16 md:mb-20">
-            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">Technology</p>
-            <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">
-              Engineered for the most demanding roads.
-            </h2>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Feature 1 - Flat-Six Performance */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
-                <svg
-                  className="h-6 w-6 text-white/70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Flat-Six Performance</h3>
-              <p className="text-sm leading-relaxed text-white/40">
-                A responsive flat-six delivers immediate throttle response and a rising soundtrack from every apex.
-              </p>
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-white">-45</span>
-                <span className="text-sm text-white/40">dB</span>
-              </div>
-            </div>
-
-            {/* Feature 2 - Planar Drivers */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
-                <svg
-                  className="h-6 w-6 text-white/70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9.348 14.651a3.75 3.75 0 010-5.302m5.302 0a3.75 3.75 0 010 5.302m-7.425 2.122a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.789m13.788 0c3.808 3.808 3.808 9.981 0 13.79M12 12h.008v.007H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Adaptive Chassis</h3>
-              <p className="text-sm leading-relaxed text-white/40">
-                Adaptive suspension balances everyday composure with precise control when the road starts to bend.
-              </p>
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-white">40</span>
-                <span className="text-sm text-white/40">mm</span>
-              </div>
-            </div>
-
-            {/* Feature 3 - Battery Life */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
-                <svg
-                  className="h-6 w-6 text-white/70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5H18V15H4.5v-4.5zM3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Driver-Focused Cockpit</h3>
-              <p className="text-sm leading-relaxed text-white/40">
-                Every control falls naturally to hand, from the steering wheel to the intuitive driver display.
-              </p>
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-white">60</span>
-                <span className="text-sm text-white/40">hours</span>
-              </div>
-            </div>
-
-            {/* Feature 4 - 360° Turntable Reveal */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
-                <svg
-                  className="h-6 w-6 text-white/70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">360° Turntable Reveal</h3>
-              <p className="text-sm leading-relaxed text-white/40">
-                Explore the 911 from every side with a cinematic frame-by-frame turntable reveal.
-              </p>
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-white">360</span>
-                <span className="text-sm text-white/40">degree</span>
-              </div>
-            </div>
-
-            {/* Feature 5 - Bluetooth */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
-                <svg
-                  className="h-6 w-6 text-white/70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Sport Chrono</h3>
-              <p className="text-sm leading-relaxed text-white/40">
-                A stopwatch-inspired performance system keeps every launch and lap within reach.
-              </p>
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-white">5.3</span>
-                <span className="text-sm text-white/40">system</span>
-              </div>
-            </div>
-
-            {/* Feature 6 - Weight */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
-                <svg
-                  className="h-6 w-6 text-white/70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">Timeless Silhouette</h3>
-              <p className="text-sm leading-relaxed text-white/40">
-                A balanced silhouette, signature lamps, and a roofline shaped by generations of refinement.
-              </p>
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-white">285</span>
-                <span className="text-sm text-white/40">grams</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative z-10 border-t border-white/5 bg-[#050505]">
-        <div className="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-32">
-          <div className="grid gap-12 md:grid-cols-2 md:gap-16">
-            <div>
-              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">The Future of Driving</p>
-              <h3 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Performance that stays with you.</h3>
-              <p className="mt-4 max-w-md text-sm leading-relaxed text-white/40">
-                The 911 Carrera represents decades of sports-car evolution. Every surface, control, and response is designed to keep the driver at the center.
-              </p>
-              <button className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-medium text-black transition-opacity hover:opacity-90">
-                Configure your 911
-              </button>
-            </div>
-            <div className="flex flex-col justify-center">
-              <p className="text-sm text-white/40">First deliveries</p>
-              <p className="mt-1 text-2xl font-semibold text-white">Spring 2026</p>
-            </div>
-          </div>
-          <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-white/30">
-            <span>© 2026 Momo Automotive</span>
-            <div className="flex gap-6">
-              <a href="#" className="transition-colors hover:text-white/60">
-                Privacy
-              </a>
-              <a href="#" className="transition-colors hover:text-white/60">
-                Terms
-              </a>
-              <a href="#" className="transition-colors hover:text-white/60">
-                Contact
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  )
+      <div className="header-actions"><Link className="quiet-link" href="/profile">Profile</Link><Link className="button button-small" href="/login">Sign in with Discord</Link><button className="menu-button" aria-label={menuOpen ? "Close menu" : "Open menu"} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div>
+    </header>
+    <section className="hero" aria-labelledby="hero-title"><div className="hero-glow" /><p className="eyebrow">ROBLOX VEHICLE MARKETPLACE</p><h1 id="hero-title">Built to be<br /><em>driven.</em></h1><p className="hero-copy">Premium vehicles, properly prepared for your game. Browse the catalog, inspect every angle, and commission the details that make a car yours.</p><div className="hero-actions"><a className="button" href="#catalog">Explore catalog <ArrowRight size={16} /></a><Link className="button button-ghost" href="/commissions">Start a commission</Link></div><div className="hero-specs"><span><Check size={14} /> Vehicle previews</span><span><Check size={14} /> Roblox-ready delivery</span><span><Check size={14} /> Custom commissions</span></div></section>
+    <section className="preview-strip"><div><Play size={17} /><div><p className="eyebrow">SEE IT FIRST</p><strong>Video and carousel previews</strong></div></div><p>Each catalog release can include a YouTube walkaround, image collage, and interactive 360° preview before you buy.</p><a href="#catalog">Browse releases <ArrowRight size={16} /></a></section>
+    <section id="catalog" className="catalog" aria-labelledby="catalog-title"><div className="catalog-heading"><div><p className="eyebrow">THE CATALOG</p><h2 id="catalog-title">Find your next build.</h2></div><p>Choose a marque on the left. The vehicle collection scrolls independently, so the catalog stays quick as it grows.</p></div><div className="catalog-layout"><aside className="brand-rail" aria-label="Vehicle brands"><p className="rail-label">BRANDS</p>{brands.map((item) => <button key={item} onClick={() => setBrand(item)} className={brand === item ? "brand active" : "brand"}>{item}</button>)}<Link className="commission-prompt" href="/commissions"><span>Need something specific?</span> Commission a vehicle <ArrowRight size={15} /></Link></aside><div className="product-scroll" aria-live="polite">{shown.map((product, index) => <article className="product-card" key={product.slug}><div className={"vehicle-art art-" + index % 3}><span className="art-number">{String(index + 1).padStart(2, "0")}</span><div className="car-silhouette" /><span>{product.preview}</span></div><div className="product-info"><div><p>{product.brand}</p><h3>{product.name}</h3></div><span className="format">{product.format}</span></div><div className="product-footer"><span>{product.price}</span><Link href={"/products/" + product.slug}>View vehicle <ArrowRight size={16} /></Link></div></article>)}</div></div></section>
+    <section className="commission-banner"><div><p className="eyebrow">BEYOND THE CATALOG</p><h2>Make the vehicle<br /><em>your own.</em></h2></div><div className="commission-copy"><p>Choose a vehicle, tell us what needs changing, attach a badge or emblem, and keep every detail in one tracked request.</p><Link className="button" href="/commissions">Commission an edit <ArrowRight size={16} /></Link></div></section>
+    <section className="trust-grid"><div><ShieldCheck size={19} /><h3>Clear scope</h3><p>Each listing says exactly what is included and what can be commissioned.</p></div><div><Eye size={19} /><h3>Preview before purchase</h3><p>Use video, collage and 360° references to make an informed decision.</p></div><div><SlidersHorizontal size={19} /><h3>Your settings</h3><p>Adjust type size, contrast and motion controls whenever you need them.</p></div></section>
+    <div className="accessibility-dock" aria-label="Accessibility display settings"><button onClick={() => setCompact(!compact)} aria-pressed={compact}>A<span>A</span></button><button onClick={() => setHighContrast(!highContrast)} aria-pressed={highContrast}>Contrast</button><button onClick={() => setReduceMotion(!reduceMotion)} aria-pressed={reduceMotion}>Motion</button></div>
+    <footer><Link className="wordmark" href="/">RYVN<span>®</span></Link><p>Vehicles for worlds in motion.</p><div><Link href="/accessibility">Accessibility</Link><Link href="/settings">Settings</Link><Link href="/login">Discord sign in</Link></div><small>© 2026 RYVN. All rights reserved.</small></footer>
+  </main>
 }
