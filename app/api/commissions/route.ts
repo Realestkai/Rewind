@@ -21,7 +21,15 @@ async function createTicket(userId: string, username: string, details: string) {
   })
   if (!ticket.ok) return null
   const channel = await ticket.json() as { id: string }
-  await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages`, { method: "POST", headers: { Authorization: `Bot ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ content: `New RYVN commission request from <@${userId}>.\n\n${details}` }) })
+  await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages`, { method: "POST", headers: { Authorization: `Bot ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({
+    content: `<@${userId}>`,
+    embeds: [{ title: "New RYVN commission", color: 0xe9e9ee, description: "A staff member will claim this request before replying.", fields: [
+      { name: "Customer", value: `<@${userId}>`, inline: true },
+      { name: "Status", value: "Awaiting staff claim", inline: true },
+      { name: "Request details", value: details.slice(0, 1024) },
+    ], footer: { text: "RYVN Support · Keep requests in this private channel" } }],
+    components: [{ type: 1, components: [{ type: 2, style: 1, label: "Claim ticket", custom_id: `ryvn_claim_${channel.id}` }, { type: 2, style: 4, label: "Close ticket", custom_id: `ryvn_close_${channel.id}` }] }],
+  }) })
   return channel.id
 }
 
