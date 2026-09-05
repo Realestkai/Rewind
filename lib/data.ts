@@ -19,3 +19,8 @@ export async function createCommission(input: { userId: string; productId: strin
   const rows = await db()`insert into commissions (user_id, product_id, request_type, details, attachment_url, discord_channel_id) values (${input.userId}, ${input.productId}, ${input.requestTypes}, ${input.details}, ${input.attachmentUrl ?? null}, ${input.channelId ?? null}) returning id, status, created_at` as { id: string; status: string; created_at: string }[]
   return rows[0]
 }
+export type Review = { id: string; rating: number; body: string; username: string; avatar_url: string | null }
+export async function approvedReviews(productId: string): Promise<Review[]> {
+  if (!dataConfigured) return []
+  return db()`select reviews.id, reviews.rating, reviews.body, users.username, users.avatar_url from reviews join users on users.id = reviews.user_id where reviews.product_id = ${productId} and reviews.approved = true order by reviews.created_at desc` as Promise<Review[]>
+}
