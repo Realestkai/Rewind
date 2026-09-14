@@ -55,6 +55,11 @@ function clip(value, length) {
   return text.length <= length ? text : `${text.slice(0, Math.max(0, length - 1))}…`
 }
 
+function answerCard(value, maxLength) {
+  const normalized = String(value ?? "").trim().replaceAll("```", "'''") || "Not provided"
+  return "```\n" + clip(normalized, maxLength - 8) + "\n```"
+}
+
 function ticketStatusLabel(status) {
   return {
     pending: "Awaiting staff review",
@@ -133,21 +138,21 @@ function reviewEmbed(application) {
   const embed = new EmbedBuilder()
     .setColor(colors[application.status] ?? 0x5865f2)
     .setTitle(`RYVN request review · ${ticketStatusLabel(application.status)}`)
-    .setDescription(`**Request details**\n${clip(application.answers.details, 3_800)}`)
+    .setDescription("**FULL REQUEST DETAILS**\n" + answerCard(application.answers.details, 4_000))
     .addFields(
-      { name: "Ticket opener", value: `<@${application.userId}> (${clip(application.userTag, 80)})`, inline: false },
-      { name: "Request type", value: clip(requestType(application), 1_024), inline: true },
-      { name: "Vehicle / commission", value: clip(vehicleOrCommission(application), 1_024), inline: true },
-      { name: "Order, invoice, or Roblox user", value: clip(application.answers.reference || "Not provided", 1_024), inline: false },
-      { name: "Submitted", value: discordTime(application.createdAt), inline: true },
+      { name: "TICKET OPENER", value: `> <@${application.userId}> (${clip(application.userTag, 80)})`, inline: false },
+      { name: "REQUEST TYPE", value: answerCard(requestType(application), 1_024), inline: true },
+      { name: "VEHICLE / COMMISSION", value: answerCard(vehicleOrCommission(application), 1_024), inline: true },
+      { name: "ORDER, INVOICE, OR ROBLOX USER", value: answerCard(application.answers.reference, 1_024), inline: false },
+      { name: "SUBMITTED", value: discordTime(application.createdAt), inline: true },
     )
     .setFooter({ text: `Application ID: ${application.id}` })
 
   if (application.claimedBy) {
-    embed.addFields({ name: "Claimed by", value: `<@${application.claimedBy}>`, inline: true })
+    embed.addFields({ name: "CLAIMED BY", value: `> <@${application.claimedBy}>`, inline: true })
   }
   if (application.denialReason) {
-    embed.addFields({ name: "Denial reason", value: clip(application.denialReason, 1_024), inline: false })
+    embed.addFields({ name: "DENIAL REASON", value: answerCard(application.denialReason, 1_024), inline: false })
   }
 
   return embed
@@ -157,11 +162,11 @@ function ticketEmbed(application) {
   return new EmbedBuilder()
     .setColor(0x2ecc71)
     .setTitle(`RYVN request · ${clip(requestType(application), 200)}`)
-    .setDescription(`Welcome <@${application.userId}>. A staff member has accepted and claimed your request.\n\n**Request details**\n${clip(application.answers.details, 3_500)}`)
+    .setDescription(`Welcome <@${application.userId}>. A staff member has accepted and claimed your request.\n\n**FULL REQUEST DETAILS**\n${answerCard(application.answers.details, 3_700)}`)
     .addFields(
-      { name: "Vehicle / commission", value: clip(vehicleOrCommission(application), 1_024), inline: false },
-      { name: "Order, invoice, or Roblox user", value: clip(application.answers.reference || "Not provided", 1_024), inline: false },
-      { name: "Claimed by", value: `<@${application.claimedBy}>`, inline: true },
+      { name: "VEHICLE / COMMISSION", value: answerCard(vehicleOrCommission(application), 1_024), inline: false },
+      { name: "ORDER, INVOICE, OR ROBLOX USER", value: answerCard(application.answers.reference, 1_024), inline: false },
+      { name: "CLAIMED BY", value: `> <@${application.claimedBy}>`, inline: true },
     )
     .setFooter({ text: `Ticket application: ${application.id}` })
 }
@@ -478,9 +483,9 @@ async function handleDenial(interaction, applicationId) {
       .setTitle("Your ticket request was denied")
       .setDescription("A staff member reviewed your request and was unable to accept it.")
       .addFields(
-        { name: "Request type", value: clip(requestType(application), 1_024), inline: false },
-        { name: "Vehicle / commission", value: clip(vehicleOrCommission(application), 1_024), inline: false },
-        { name: "Reason", value: clip(application.denialReason, 1_024), inline: false },
+        { name: "REQUEST TYPE", value: answerCard(requestType(application), 1_024), inline: false },
+        { name: "VEHICLE / COMMISSION", value: answerCard(vehicleOrCommission(application), 1_024), inline: false },
+        { name: "STAFF REASON", value: answerCard(application.denialReason, 1_024), inline: false },
       )
       .setFooter({ text: "You may submit a new ticket if your situation changes." }),
   )
