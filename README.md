@@ -1,44 +1,31 @@
-# Rewind
+# Rewind ticket bot
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Rewind is now a Discord ticket bot only. There is no website or dashboard.
 
-## Built with v0
+## Ticket workflow
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+1. A staff member runs `/ticket-panel` in the channel where members should request help.
+2. A member selects **Open a ticket** and completes the subject, full-details, and optional reference/contact questions.
+3. No ticket channel is created yet. The answers are posted as a private embed in `DISCORD_REVIEW_CHANNEL_ID` for staff.
+4. A staff member can read the whole request, then choose **Claim & open** or **Deny**.
+5. Claiming creates a private channel in `DISCORD_TICKET_CATEGORY_ID` for the opener, staff role, and optional owner role. The accepted request is included in its opening embed.
+6. Denying requires a written reason. The review request is deleted and the opener receives a DM with that reason. Since approval happens before a channel is created, a denied request never exposes a ticket channel.
+7. Staff can close an accepted ticket with a required reason. This DMs the opener and deletes the channel.
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_0cs7jI4PgYQVI7Kej2peaRKej6mY)
+Members can have only one request awaiting review or open at once.
 
-## Getting Started
+## Setup
 
-First, run the development server:
+1. Create a Discord application and bot. Invite it to the server with the `bot` and `applications.commands` scopes.
+2. Give the bot permission to View Channels, Send Messages, Embed Links, Manage Channels, and Read Message History. It also needs access to the review channel and ticket category.
+3. Copy `.env.example` to `.env` locally, or add the same variables in Railway. Fill in every required ID.
+4. Run `pnpm install` and then `pnpm start`.
+5. In Discord, run `/ticket-panel` as a staff member to create the member-facing ticket panel.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+### Persistent review queue
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Applications are stored in `TICKET_DATA_PATH`. For Railway, attach a Volume and set this to a path inside that mounted volume, for example `/data/tickets.json`. Without a Volume, pending review cards still work while the service remains up, but Railway restarts clear their backing file.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Railway
 
-## Learn More
-
-To learn more, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
-# RYVN
-
-RYVN is a Roblox vehicle marketplace with a marque-filtered catalog, vehicle detail pages, commission requests, Discord account entry, staff dashboard screens, and accessibility controls.
-
-Copy `.env.example` to `.env.local` before enabling Discord OAuth. The callback adds a member to the RYVN Discord guild only when the bot token and guild ID are configured.
-
-## Live data
-
-RYVN uses Neon Postgres. The schema in [supabase/schema.sql](supabase/schema.sql) has already been applied to the linked Neon production branch. Add `DATABASE_URL` to Vercel to activate the catalog API. The API reads only published products and accepts staff product creation through the protected product endpoint.
-
-For a full production launch, add the Discord OAuth client ID, client secret, bot token, guild ID, redirect URI, ticket category ID, `SESSION_SECRET`, and `RYVN_ADMIN_API_KEY` in Vercel. Configure payment providers last, then attach GLB/GLTF vehicle models to the preview surface.
+The included `railway.toml` starts the bot with `pnpm start`. Configure the Discord environment variables in the service settings. Do not set a public domain; this is a worker service, not a web application.
