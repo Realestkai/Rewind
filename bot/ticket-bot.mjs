@@ -25,6 +25,8 @@ const config = {
   ticketCategoryId: process.env.DISCORD_TICKET_CATEGORY_ID,
   staffRoleId: process.env.DISCORD_STAFF_ROLE_ID,
   ownerRoleId: process.env.DISCORD_OWNER_ROLE_ID,
+  showroomChannelId: process.env.DISCORD_SHOWROOM_CHANNEL_ID,
+  showroomReaction: process.env.DISCORD_SHOWROOM_REACTION ?? "🔥",
   dataPath: process.env.TICKET_DATA_PATH ?? "./data/tickets.json",
 }
 
@@ -38,7 +40,9 @@ for (const [name, value] of Object.entries({
   if (!value) throw new Error(`${name} is required.`)
 }
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+})
 const applications = new Map()
 const dataFile = resolve(config.dataPath)
 
@@ -509,6 +513,24 @@ client.once(Events.ClientReady, async (readyClient) => {
     await registerCommands()
   } catch (error) {
     log("Could not register commands", error.message)
+  }
+})
+
+client.on(Events.MessageCreate, async (message) => {
+  if (
+    !config.showroomChannelId ||
+    message.author.bot ||
+    message.channelId !== config.showroomChannelId ||
+    message.attachments.size === 0
+  ) {
+    return
+  }
+
+  try {
+    await message.react(config.showroomReaction)
+    log("Reacted to a showroom image", { messageId: message.id, channelId: message.channelId })
+  } catch (error) {
+    log("Could not react to showroom image", error.message)
   }
 })
 

@@ -2,6 +2,8 @@
 
 Rewind is now a Discord ticket bot only. There is no website or dashboard.
 
+It also retains the showroom feature: when `DISCORD_SHOWROOM_CHANNEL_ID` is set, the bot reacts to each post containing an image attachment in that channel. The reaction defaults to `🔥` and can be changed with `DISCORD_SHOWROOM_REACTION`.
+
 ## Ticket workflow
 
 1. A staff member runs `/ticket-panel` in the channel where members should request help.
@@ -17,7 +19,7 @@ Members can have only one request awaiting review or open at once.
 ## Setup
 
 1. Create a Discord application and bot. Invite it to the server with the `bot` and `applications.commands` scopes.
-2. Give the bot permission to View Channels, Send Messages, Embed Links, Manage Channels, and Read Message History. It also needs access to the review channel and ticket category.
+2. Give the bot permission to View Channels, Send Messages, Add Reactions, Embed Links, Manage Channels, and Read Message History. It also needs access to the review channel and ticket category. If showroom reactions are enabled, turn on **Message Content Intent** in the Discord Developer Portal and give the bot access to that channel.
 3. Copy `.env.example` to `.env` locally, or add the same variables in Railway. Fill in every required ID.
 4. Run `pnpm install` and then `pnpm start`.
 5. In Discord, run `/ticket-panel` as a staff member to create the member-facing ticket panel.
