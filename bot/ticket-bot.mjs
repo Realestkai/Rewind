@@ -65,6 +65,14 @@ function ticketStatusLabel(status) {
   }[status] ?? status
 }
 
+function requestType(application) {
+  return application.answers.requestType ?? application.answers.subject ?? "Not provided"
+}
+
+function vehicleOrCommission(application) {
+  return application.answers.vehicle ?? "Not provided"
+}
+
 function discordTime(value) {
   return `<t:${Math.floor(new Date(value).getTime() / 1000)}:F>`
 }
@@ -124,12 +132,13 @@ function reviewEmbed(application) {
 
   const embed = new EmbedBuilder()
     .setColor(colors[application.status] ?? 0x5865f2)
-    .setTitle(`Ticket review · ${ticketStatusLabel(application.status)}`)
+    .setTitle(`RYVN request review · ${ticketStatusLabel(application.status)}`)
     .setDescription(`**Request details**\n${clip(application.answers.details, 3_800)}`)
     .addFields(
       { name: "Ticket opener", value: `<@${application.userId}> (${clip(application.userTag, 80)})`, inline: false },
-      { name: "Subject", value: clip(application.answers.subject, 1_024), inline: false },
-      { name: "Reference / contact", value: clip(application.answers.reference || "Not provided", 1_024), inline: false },
+      { name: "Request type", value: clip(requestType(application), 1_024), inline: true },
+      { name: "Vehicle / commission", value: clip(vehicleOrCommission(application), 1_024), inline: true },
+      { name: "Order, invoice, or Roblox user", value: clip(application.answers.reference || "Not provided", 1_024), inline: false },
       { name: "Submitted", value: discordTime(application.createdAt), inline: true },
     )
     .setFooter({ text: `Application ID: ${application.id}` })
@@ -147,10 +156,11 @@ function reviewEmbed(application) {
 function ticketEmbed(application) {
   return new EmbedBuilder()
     .setColor(0x2ecc71)
-    .setTitle(`Ticket · ${clip(application.answers.subject, 200)}`)
+    .setTitle(`RYVN request · ${clip(requestType(application), 200)}`)
     .setDescription(`Welcome <@${application.userId}>. A staff member has accepted and claimed your request.\n\n**Request details**\n${clip(application.answers.details, 3_500)}`)
     .addFields(
-      { name: "Reference / contact", value: clip(application.answers.reference || "Not provided", 1_024), inline: false },
+      { name: "Vehicle / commission", value: clip(vehicleOrCommission(application), 1_024), inline: false },
+      { name: "Order, invoice, or Roblox user", value: clip(application.answers.reference || "Not provided", 1_024), inline: false },
       { name: "Claimed by", value: `<@${application.claimedBy}>`, inline: true },
     )
     .setFooter({ text: `Ticket application: ${application.id}` })
@@ -159,11 +169,11 @@ function ticketEmbed(application) {
 function panelEmbed() {
   return new EmbedBuilder()
     .setColor(0x5865f2)
-    .setTitle("Support tickets")
+    .setTitle("RYVN vehicle support & commissions")
     .setDescription(
-      "Press **Open a ticket** to answer a few questions. Your request is sent to staff for review first; a private ticket is only created once a staff member accepts and claims it.",
+      "Open a request for a purchased vehicle, a custom commission, or a vehicle you are interested in. Staff reviews every request before a private ticket is created.",
     )
-    .setFooter({ text: "Please include enough detail for staff to make a decision." })
+    .setFooter({ text: "Include the vehicle, purchase details, or clear commission specifications." })
 }
 
 function reviewButtons(application) {
@@ -194,34 +204,43 @@ function closeButtons(application) {
 }
 
 function applicationModal() {
-  const subject = new TextInputBuilder()
-    .setCustomId("subject")
-    .setLabel("What is your ticket about?")
-    .setPlaceholder("Example: Help with my order")
+  const requestTypeInput = new TextInputBuilder()
+    .setCustomId("request-type")
+    .setLabel("What do you need help with?")
+    .setPlaceholder("Vehicle support, commission, or purchase help")
     .setStyle(TextInputStyle.Short)
     .setMinLength(3)
     .setMaxLength(100)
     .setRequired(true)
+  const vehicleInput = new TextInputBuilder()
+    .setCustomId("vehicle")
+    .setLabel("Which vehicle or commission?")
+    .setPlaceholder("Vehicle name, model, or the build you want")
+    .setStyle(TextInputStyle.Short)
+    .setMinLength(2)
+    .setMaxLength(200)
+    .setRequired(true)
   const details = new TextInputBuilder()
     .setCustomId("details")
-    .setLabel("Tell staff everything they need to know")
-    .setPlaceholder("Include dates, usernames, order details, and what outcome you need.")
+    .setLabel("Describe your issue or request")
+    .setPlaceholder("Include the issue, wanted changes, platform, or commission specifications.")
     .setStyle(TextInputStyle.Paragraph)
     .setMinLength(10)
     .setMaxLength(4_000)
     .setRequired(true)
   const reference = new TextInputBuilder()
     .setCustomId("reference")
-    .setLabel("Order ID or preferred contact (optional)")
+    .setLabel("Order, invoice, or Roblox user (optional)")
     .setStyle(TextInputStyle.Short)
     .setMaxLength(200)
     .setRequired(false)
 
   return new ModalBuilder()
     .setCustomId("ticket:submit")
-    .setTitle("Ticket application")
+    .setTitle("RYVN support & commission request")
     .addComponents(
-      new ActionRowBuilder().addComponents(subject),
+      new ActionRowBuilder().addComponents(requestTypeInput),
+      new ActionRowBuilder().addComponents(vehicleInput),
       new ActionRowBuilder().addComponents(details),
       new ActionRowBuilder().addComponents(reference),
     )
@@ -329,7 +348,7 @@ async function handlePanelCommand(interaction) {
     embeds: [panelEmbed()],
     components: [
       new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId("ticket:open").setLabel("Open a ticket").setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId("ticket:open").setLabel("Open a request").setStyle(ButtonStyle.Primary),
       ),
     ],
   })
@@ -357,7 +376,8 @@ async function handleApplicationSubmission(interaction) {
     createdAt: new Date().toISOString(),
     status: "pending",
     answers: {
-      subject: interaction.fields.getTextInputValue("subject"),
+      requestType: interaction.fields.getTextInputValue("request-type"),
+      vehicle: interaction.fields.getTextInputValue("vehicle"),
       details: interaction.fields.getTextInputValue("details"),
       reference: interaction.fields.getTextInputValue("reference"),
     },
@@ -458,7 +478,8 @@ async function handleDenial(interaction, applicationId) {
       .setTitle("Your ticket request was denied")
       .setDescription("A staff member reviewed your request and was unable to accept it.")
       .addFields(
-        { name: "Subject", value: clip(application.answers.subject, 1_024), inline: false },
+        { name: "Request type", value: clip(requestType(application), 1_024), inline: false },
+        { name: "Vehicle / commission", value: clip(vehicleOrCommission(application), 1_024), inline: false },
         { name: "Reason", value: clip(application.denialReason, 1_024), inline: false },
       )
       .setFooter({ text: "You may submit a new ticket if your situation changes." }),
